@@ -12,7 +12,16 @@ if (!empty($data->id) && !empty($data->estado)) {
     $id = $data->id;
     $estado = $data->estado;
 
-    $query = "UPDATE tickets SET estado = ? WHERE id = ?";
+    $fecha_fin = null;
+    
+    if ($estado === 'Completo') {
+        $fecha_fin = date('Y-m-d H:i:s');
+        $query = "UPDATE tickets SET estado = ?, fecha_fin = ? WHERE id = ?";
+        $params = [$estado, $fecha_fin, $id];
+    } else {
+        $query = "UPDATE tickets SET estado = ?, fecha_fin = NULL WHERE id = ?";
+        $params = [$estado, $id];
+    }
     
     $stmt = $conn->prepare($query);
     
@@ -21,10 +30,13 @@ if (!empty($data->id) && !empty($data->estado)) {
         exit();
     }
 
-    if ($stmt->execute([$estado, $id])) {
-        echo json_encode(["status" => true, "message" => "Estado actualizado correctamente."]);
+    if ($stmt->execute($params)) {
+        echo json_encode([
+            "status" => true, 
+            "message" => "Estado actualizado.", 
+            "fecha_fin" => $fecha_fin 
+        ]);
     } else {
-        
         $errorInfo = $stmt->errorInfo();
         echo json_encode(["status" => false, "message" => "Error al ejecutar: " . $errorInfo[2]]);
     }

@@ -4,10 +4,10 @@ header("Content-Type: application/json; charset=UTF-8");
 
 include_once 'db_connect.php'; 
 
-if (isset($_GET['personal'])) {
-    $personal = $_GET['personal'];
+if (isset($_GET['id'])) {
+    $id_usuario = $_GET['id'];
 
-    $query = "SELECT * FROM tickets WHERE personal = ? ORDER BY fecha DESC";
+    $query = "SELECT * FROM tickets WHERE usuario_id = ? ORDER BY fecha DESC";
     
     $stmt = $conn->prepare($query);
 
@@ -17,7 +17,7 @@ if (isset($_GET['personal'])) {
         exit();
     }
 
-    $stmt->execute([$personal]);
+    $stmt->execute([$id_usuario]);
 
     $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

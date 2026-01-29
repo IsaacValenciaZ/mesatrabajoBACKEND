@@ -1,4 +1,7 @@
 <?php
+// 1. AJUSTA TU ZONA HORARIA (Muy importante)
+date_default_timezone_set('America/Mexico_City'); 
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
@@ -9,9 +12,11 @@ $data = json_decode(file_get_contents("php://input"));
 if(isset($data->nombre_usuario) && isset($data->personal) && isset($data->descripcion)) {
     try {
         
+        $fecha_limite = date('Y-m-d H:i:s', strtotime('+24 hours'));
         
-        $sql = "INSERT INTO tickets (nombre_usuario, departamento, descripcion, prioridad, personal, notas) 
-                VALUES (:user, :depto, :desc, :prio, :pers, :notas)";
+
+        $sql = "INSERT INTO tickets (nombre_usuario, departamento, descripcion, prioridad, personal, notas, fecha_limite, fecha_fin) 
+                VALUES (:user, :depto, :desc, :prio, :pers, :notas, :limite, NULL)";
         
         $stmt = $conn->prepare($sql);
         $stmt->execute([
@@ -20,10 +25,11 @@ if(isset($data->nombre_usuario) && isset($data->personal) && isset($data->descri
             ':desc' => $data->descripcion,     
             ':prio' => $data->prioridad,
             ':pers' => $data->personal,
-            ':notas' => $data->notas
+            ':notas' => $data->notas,
+            ':limite' => $fecha_limite 
         ]);
 
-        echo json_encode(["status" => true, "message" => "Ticket creado"]);
+        echo json_encode(["status" => true, "message" => "Ticket creado. Vence: " . $fecha_limite]);
     } catch (PDOException $e) {
         echo json_encode(["status" => false, "error" => $e->getMessage()]);
     }
