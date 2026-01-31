@@ -1,5 +1,4 @@
 <?php
-// 1. AJUSTA TU ZONA HORARIA (Muy importante)
 date_default_timezone_set('America/Mexico_City'); 
 
 header("Access-Control-Allow-Origin: *");
@@ -14,9 +13,10 @@ if(isset($data->nombre_usuario) && isset($data->personal) && isset($data->descri
         
         $fecha_limite = date('Y-m-d H:i:s', strtotime('+24 hours'));
         
+        $adminId = isset($data->admin_id) ? $data->admin_id : null;
 
-        $sql = "INSERT INTO tickets (nombre_usuario, departamento, descripcion, prioridad, personal, notas, fecha_limite, fecha_fin) 
-                VALUES (:user, :depto, :desc, :prio, :pers, :notas, :limite, NULL)";
+        $sql = "INSERT INTO tickets (nombre_usuario, departamento, descripcion, prioridad, personal, notas, fecha_limite, fecha_fin, admin_id) 
+                VALUES (:user, :depto, :desc, :prio, :pers, :notas, :limite, NULL, :adminId)";
         
         $stmt = $conn->prepare($sql);
         $stmt->execute([
@@ -26,7 +26,8 @@ if(isset($data->nombre_usuario) && isset($data->personal) && isset($data->descri
             ':prio' => $data->prioridad,
             ':pers' => $data->personal,
             ':notas' => $data->notas,
-            ':limite' => $fecha_limite 
+            ':limite' => $fecha_limite,
+            ':adminId' => $adminId 
         ]);
 
         echo json_encode(["status" => true, "message" => "Ticket creado. Vence: " . $fecha_limite]);
