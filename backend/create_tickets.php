@@ -1,6 +1,5 @@
 <?php
 date_default_timezone_set('America/Mexico_City'); 
-
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
@@ -10,7 +9,6 @@ $data = json_decode(file_get_contents("php://input"));
 
 if(isset($data->nombre_usuario) && isset($data->personal) && isset($data->descripcion)) {
     try {
-        
         $fecha_limite = date('Y-m-d H:i:s', strtotime('+24 hours'));
         
         $adminId = isset($data->admin_id) ? $data->admin_id : null;
@@ -30,7 +28,7 @@ if(isset($data->nombre_usuario) && isset($data->personal) && isset($data->descri
             ':adminId' => $adminId 
         ]);
 
-        echo json_encode(["status" => true, "message" => "Ticket creado. Vence: " . $fecha_limite]);
+        echo json_encode(["status" => true, "message" => "Ticket creado correctamente"]);
     } catch (PDOException $e) {
         echo json_encode(["status" => false, "error" => $e->getMessage()]);
     }
