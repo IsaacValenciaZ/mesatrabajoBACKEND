@@ -12,20 +12,23 @@ if(isset($data->nombre_usuario) && isset($data->personal) && isset($data->descri
         $fecha_limite = date('Y-m-d H:i:s', strtotime('+24 hours'));
         
         $adminId = isset($data->admin_id) ? $data->admin_id : null;
+        
+        $cantidad = ($data->descripcion === 'Dictaminar' && isset($data->cantidad)) ? $data->cantidad : null;
 
-        $sql = "INSERT INTO tickets (nombre_usuario, departamento, descripcion, prioridad, personal, notas, fecha_limite, fecha_fin, admin_id) 
-                VALUES (:user, :depto, :desc, :prio, :pers, :notas, :limite, NULL, :adminId)";
+        $sql = "INSERT INTO tickets (nombre_usuario, departamento, descripcion, prioridad, personal, notas, fecha_limite, fecha_fin, admin_id, cantidad) 
+                VALUES (:user, :depto, :desc, :prio, :pers, :notas, :limite, NULL, :adminId, :cant)";
         
         $stmt = $conn->prepare($sql);
         $stmt->execute([
-            ':user' => $data->nombre_usuario,
-            ':depto' => $data->departamento,
-            ':desc' => $data->descripcion,     
-            ':prio' => $data->prioridad,
-            ':pers' => $data->personal,
-            ':notas' => $data->notas,
-            ':limite' => $fecha_limite,
-            ':adminId' => $adminId 
+            ':user'    => $data->nombre_usuario,
+            ':depto'   => $data->departamento,
+            ':desc'    => $data->descripcion,     
+            ':prio'    => $data->prioridad,
+            ':pers'    => $data->personal,
+            ':notas'   => $data->notas,
+            ':limite'  => $fecha_limite,
+            ':adminId' => $adminId,
+            ':cant'    => $cantidad 
         ]);
 
         echo json_encode(["status" => true, "message" => "Ticket creado correctamente"]);
