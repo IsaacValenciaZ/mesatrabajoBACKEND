@@ -5,12 +5,12 @@ include_once 'db_connect.php';
 
 if (isset($_GET['id'])) {
     
-    $admin_id = $_GET['id']; 
+    $secretaria_id = $_GET['id']; 
 
     try {
         $query = "SELECT t.*, u.nombre as nombre_creador 
                   FROM tickets t
-                  LEFT JOIN usuarios u ON t.admin_id = u.id
+                  LEFT JOIN usuarios u ON t.secretaria_id = u.id
                   ORDER BY t.fecha DESC"; 
         
         $stmt = $conn->prepare($query);
