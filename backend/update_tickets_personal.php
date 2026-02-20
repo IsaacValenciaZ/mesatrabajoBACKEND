@@ -3,6 +3,8 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
 
+date_default_timezone_set('America/Mexico_City'); 
+
 include_once 'db_connect.php';
 
 $data = json_decode(file_get_contents("php://input"));
